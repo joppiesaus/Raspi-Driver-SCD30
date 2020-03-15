@@ -31,6 +31,7 @@ import struct
 import sys
 import math
 import crcmod # aptitude install python-crcmod
+import json
 import os, signal
 from subprocess import call
 
@@ -46,6 +47,7 @@ def flprint(*args, **kwargs):
 SENSOR_FOLDER = '/run/sensors/'
 SENSOR_NAME = 'scd30'
 LOGFILE = SENSOR_FOLDER + SENSOR_NAME + '/last'
+LOGFILE_JSON = LOGFILE + '.json'
 PRESSURE_SENSORS = ['bme280', 'bme680']
 MEAS_INTERVAL = 2 # integer between 1 and 255 (if longer needed, change code below)
 
@@ -268,7 +270,7 @@ if asc_status == 0:
 
 call(["mkdir", "-p", SENSOR_FOLDER + SENSOR_NAME])
 
-pressure_mbar = 972 # 300 metres above sea level
+pressure_mbar = 1009 # ~30 meters above sealevel
 last_pressure = pressure_mbar
 start_cont_measurement(last_pressure)
 log_once = True
@@ -335,6 +337,18 @@ while True:
   logfilehandle = open(LOGFILE, "w",1)
   logfilehandle.write(output_string)
   logfilehandle.close()
+  
+  obj = {
+    "co2": float_co2,
+    "temperature": float_T,
+    "humidity": float_rH
+  }
+  
+  print(json.dumps(obj))
+  
+  fd = open(LOGFILE_JSON, "w", 1)
+  fd.write(json.dumps(obj))
+  fd.close()
 
   time.sleep(-0.1 + MEAS_INTERVAL)
 

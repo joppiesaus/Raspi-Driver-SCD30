@@ -121,7 +121,7 @@ if read_meas_result != 2:
 
 #trigger cont meas
 # TODO read out current pressure value
-pressure_mbar = 972
+pressure_mbar = 1009 # ~30 meters above sealevel
 LSB = 0xFF & pressure_mbar
 MSB = 0xFF & (pressure_mbar >> 8)
 #print ("MSB: " + hex(MSB) + " LSB: " + hex(LSB))
